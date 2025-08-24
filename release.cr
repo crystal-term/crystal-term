@@ -130,7 +130,7 @@ class Module
       end
     end
     
-    File.write(@shard_yml_path, updated_lines.join('\n'))
+    File.write(@shard_yml_path, updated_lines.join("\n"))
   end
 end
 
