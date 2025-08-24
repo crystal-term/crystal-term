@@ -65,6 +65,7 @@ struct Module
   end
 
   def write_versions
+    puts "    [DEBUG] write_versions called for #{@name}, new_version = #{@new_version.inspect}".colorize(:magenta)
     return false unless new_ver = @new_version
     
     # Update shard.yml
