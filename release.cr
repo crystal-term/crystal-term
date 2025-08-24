@@ -40,7 +40,7 @@ struct Module
     if File.exists?(@shard_yml_path)
       content = File.read(@shard_yml_path)
       # Look for crystal-term dependencies
-      content.scan(/^\s*(term-\w+):\s*$/) do |match|
+      content.scan(/^\s*(term-\w+):\s*$/m) do |match|
         deps << match[1]
       end
     end
