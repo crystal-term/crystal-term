@@ -72,6 +72,9 @@ struct Module
       content = File.read(@shard_yml_path)
       updated = content.gsub(/^version:\s*.*$/m, "version: #{new_ver}")
       File.write(@shard_yml_path, updated)
+    else
+      puts "  Warning: shard.yml not found at #{@shard_yml_path}".colorize(:yellow)
+      return false
     end
     
     # Update version.cr
@@ -79,9 +82,15 @@ struct Module
       content = File.read(@version_cr_path)
       updated = content.gsub(/VERSION\s*=\s*"[^"]+"/, "VERSION = \"#{new_ver}\"")
       File.write(@version_cr_path, updated)
+    else
+      puts "  Warning: version.cr not found at #{@version_cr_path}".colorize(:yellow)
+      return false
     end
     
     true
+  rescue ex
+    puts "  Error updating #{@name}: #{ex.message}".colorize(:red)
+    false
   end
 
   def update_dependency_version(dep_name : String, new_version : String)
