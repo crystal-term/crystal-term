@@ -388,15 +388,26 @@ class ReleaseManager
     
     puts "\n🏷️  Creating Git releases...".colorize(:blue)
     
-    # First, stage and commit all changes together
-    puts "📝 Staging all release changes...".colorize(:yellow)
+    # Handle submodule commits first
+    puts "📝 Committing changes in each module...".colorize(:yellow)
     
     changed_modules = [] of String
     modules.each do |module_name|
       if mod = @modules[module_name]?
         if new_version = mod.new_version
           changed_modules << module_name
-          system("git add #{mod.path}/shard.yml #{mod.version_cr_path}")
+          
+          # Commit changes within the submodule
+          puts "  Committing #{module_name}...".colorize(:blue)
+          Dir.cd(mod.path) do
+            system("git add .")
+            commit_msg = "Release #{module_name} v#{new_version}"
+            unless system("git commit -m \"#{commit_msg}\"")
+              puts "    ❌ Failed to commit #{module_name}".colorize(:red)
+            else
+              puts "    ✅ Committed #{module_name}".colorize(:green)
+            end
+          end
         end
       end
     end
@@ -406,8 +417,18 @@ class ReleaseManager
       return
     end
     
-    # Create a single commit for all version updates
-    commit_msg = if changed_modules.size == 1
+    # Update parent repository with submodule changes
+    puts "💾 Updating parent repository with submodule references...".colorize(:yellow)
+    
+    # Add all submodule updates to staging
+    changed_modules.each do |module_name|
+      if mod = @modules[module_name]?
+        system("git add #{mod.path}")
+      end
+    end
+    
+    # Create parent commit for submodule updates
+    parent_commit_msg = if changed_modules.size == 1
       "Release #{changed_modules.first} v#{@modules[changed_modules.first].new_version}"
     else
       version_list = changed_modules.map { |name| 
@@ -416,9 +437,9 @@ class ReleaseManager
       "Release multiple modules: #{version_list}"
     end
     
-    puts "💾 Committing: #{commit_msg.colorize(:cyan)}"
-    unless system("git commit -m \"#{commit_msg}\"")
-      puts "❌ Failed to create commit".colorize(:red)
+    puts "💾 Committing parent repository: #{parent_commit_msg.colorize(:cyan)}"
+    unless system("git commit -m \"#{parent_commit_msg}\"")
+      puts "❌ Failed to create parent commit".colorize(:red)
       return
     end
     
@@ -440,7 +461,7 @@ class ReleaseManager
     
     # Show what was created
     puts "\n📋 Release Summary:".colorize(:blue)
-    puts "  Commit: #{commit_msg.colorize(:cyan)}"
+    puts "  Commit: #{parent_commit_msg.colorize(:cyan)}"
     changed_modules.each do |module_name|
       if mod = @modules[module_name]?
         if new_version = mod.new_version
