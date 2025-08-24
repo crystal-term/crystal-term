@@ -254,7 +254,9 @@ class ReleaseManager
       puts "    [DEBUG] After bump_version: #{name} new_version = #{mod.new_version.inspect}".colorize(:magenta)
     end
 
+    puts "    [DEBUG] Before confirm_release: term-color new_version = #{@modules["term-color"].new_version.inspect}".colorize(:magenta)
     if confirm_release
+      puts "    [DEBUG] After confirm_release: term-color new_version = #{@modules["term-color"].new_version.inspect}".colorize(:magenta)
       # Get release order based on dependencies
       release_order = calculate_release_order
       puts "    [DEBUG] After calculate_release_order: term-color new_version = #{@modules["term-color"].new_version.inspect}".colorize(:magenta)
