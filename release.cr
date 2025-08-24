@@ -70,7 +70,7 @@ struct Module
     # Update shard.yml
     if File.exists?(@shard_yml_path)
       content = File.read(@shard_yml_path)
-      updated = content.gsub(/^version:\s*.*$/, "version: #{new_ver}")
+      updated = content.gsub(/^version:\s*.*$/m, "version: #{new_ver}")
       File.write(@shard_yml_path, updated)
     end
     
