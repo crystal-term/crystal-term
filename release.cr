@@ -28,7 +28,7 @@ struct Module
   private def load_version
     if File.exists?(@shard_yml_path)
       content = File.read(@shard_yml_path)
-      if match = content.match(/^version:\s*([^\s]+)/)
+      if match = content.match(/^version:\s*([^\s]+)/m)
         return match[1]
       end
     end

@@ -51,7 +51,7 @@ def get_shard_version(module_path : String) : String?
   return nil unless File.exists?(shard_yml)
   
   content = File.read(shard_yml)
-  if match = content.match(/^version:\s*([^\s]+)/)
+  if match = content.match(/^version:\s*([^\s]+)/m)
     match[1]
   else
     nil
@@ -117,7 +117,7 @@ def fix_version_inconsistency(module_path : String, module_name : String, correc
   when "shard"
     shard_yml = File.join(module_path, "shard.yml")
     content = File.read(shard_yml)
-    updated = content.gsub(/^version:\s*.*$/, "version: #{correct_version}")
+    updated = content.gsub(/^version:\s*.*$/m, "version: #{correct_version}")
     File.write(shard_yml, updated)
     puts "  🔧 Fixed shard.yml version".colorize(:green)
   when "code"

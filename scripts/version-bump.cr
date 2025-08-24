@@ -31,7 +31,7 @@ def get_current_version(shard_yml_path : String) : String?
   return nil unless File.exists?(shard_yml_path)
   
   content = File.read(shard_yml_path)
-  if match = content.match(/^version:\s*([^\s]+)/)
+  if match = content.match(/^version:\s*([^\s]+)/m)
     match[1]
   else
     nil
@@ -57,7 +57,7 @@ def update_shard_yml(path : String, new_version : String) : Bool
   return false unless File.exists?(path)
   
   content = File.read(path)
-  updated = content.gsub(/^version:\s*.*$/, "version: #{new_version}")
+  updated = content.gsub(/^version:\s*.*$/m, "version: #{new_version}")
   
   if content != updated
     File.write(path, updated)

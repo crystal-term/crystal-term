@@ -45,7 +45,7 @@ struct ModuleInfo
     return "0.0.0" unless File.exists?(shard_yml)
     
     content = File.read(shard_yml)
-    if match = content.match(/^version:\s*([^\s]+)/)
+    if match = content.match(/^version:\s*([^\s]+)/m)
       match[1]
     else
       "0.0.0"
