@@ -332,6 +332,7 @@ class ReleaseManager
   end
 
   private def calculate_release_order : Array(String)
+    puts "    [DEBUG] Starting calculate_release_order: term-color new_version = #{@modules["term-color"].new_version.inspect}".colorize(:magenta)
     # Topological sort of dependency graph
     visited = Set(String).new
     temp_visited = Set(String).new
@@ -363,7 +364,8 @@ class ReleaseManager
     @modules.keys.each do |module_name|
       visit_node.not_nil!.call(module_name)
     end
-
+    
+    puts "    [DEBUG] Ending calculate_release_order: term-color new_version = #{@modules["term-color"].new_version.inspect}".colorize(:magenta)
     result
   end
 
