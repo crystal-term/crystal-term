@@ -251,16 +251,19 @@ class ReleaseManager
     @modules.each do |name, mod|
       new_version = mod.bump_version(bump_type)
       puts "  #{name}: #{mod.current_version} → #{new_version.colorize(:green)}"
+      puts "    [DEBUG] After bump_version: #{name} new_version = #{mod.new_version.inspect}".colorize(:magenta)
     end
 
     if confirm_release
       # Get release order based on dependencies
       release_order = calculate_release_order
+      puts "    [DEBUG] After calculate_release_order: term-color new_version = #{@modules["term-color"].new_version.inspect}".colorize(:magenta)
       
       puts "\n📋 Release order: #{release_order.join(" → ").colorize(:cyan)}"
       
       # Update inter-dependencies first
       update_inter_dependencies
+      puts "    [DEBUG] After update_inter_dependencies: term-color new_version = #{@modules["term-color"].new_version.inspect}".colorize(:magenta)
       
       # Write all version files
       puts "\n📝 Writing version files...".colorize(:yellow)
