@@ -9,7 +9,7 @@ require "colorize"
 require "json"
 
 # Represents a module in the monorepo
-struct Module
+class Module
   property name : String
   property path : String
   property current_version : String
