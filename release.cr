@@ -262,6 +262,7 @@ class ReleaseManager
       update_inter_dependencies
       
       # Write all version files
+      puts "\n📝 Writing version files...".colorize(:yellow)
       release_order.each do |module_name|
         if mod = @modules[module_name]?
           if mod.write_versions
