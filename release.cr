@@ -65,7 +65,6 @@ class Module
   end
 
   def write_versions
-    puts "    [DEBUG] write_versions called for #{@name}, new_version = #{@new_version.inspect}".colorize(:magenta)
     return false unless new_ver = @new_version
     
     # Update shard.yml
@@ -251,27 +250,21 @@ class ReleaseManager
     @modules.each do |name, mod|
       new_version = mod.bump_version(bump_type)
       puts "  #{name}: #{mod.current_version} → #{new_version.colorize(:green)}"
-      puts "    [DEBUG] After bump_version: #{name} new_version = #{mod.new_version.inspect}".colorize(:magenta)
     end
 
-    puts "    [DEBUG] Before confirm_release: term-color new_version = #{@modules["term-color"].new_version.inspect}".colorize(:magenta)
     if confirm_release
-      puts "    [DEBUG] After confirm_release: term-color new_version = #{@modules["term-color"].new_version.inspect}".colorize(:magenta)
       # Get release order based on dependencies
       release_order = calculate_release_order
-      puts "    [DEBUG] After calculate_release_order: term-color new_version = #{@modules["term-color"].new_version.inspect}".colorize(:magenta)
       
       puts "\n📋 Release order: #{release_order.join(" → ").colorize(:cyan)}"
       
       # Update inter-dependencies first
       update_inter_dependencies
-      puts "    [DEBUG] After update_inter_dependencies: term-color new_version = #{@modules["term-color"].new_version.inspect}".colorize(:magenta)
       
       # Write all version files
       puts "\n📝 Writing version files...".colorize(:yellow)
       release_order.each do |module_name|
         if mod = @modules[module_name]?
-          puts "  Processing #{module_name}... (new_version = #{mod.new_version.inspect})".colorize(:blue)
           if mod.write_versions
             puts "✅ Updated #{module_name}".colorize(:green)
           else
@@ -334,7 +327,6 @@ class ReleaseManager
   end
 
   private def calculate_release_order : Array(String)
-    puts "    [DEBUG] Starting calculate_release_order: term-color new_version = #{@modules["term-color"].new_version.inspect}".colorize(:magenta)
     # Topological sort of dependency graph
     visited = Set(String).new
     temp_visited = Set(String).new
@@ -367,7 +359,6 @@ class ReleaseManager
       visit_node.not_nil!.call(module_name)
     end
     
-    puts "    [DEBUG] Ending calculate_release_order: term-color new_version = #{@modules["term-color"].new_version.inspect}".colorize(:magenta)
     result
   end
 
