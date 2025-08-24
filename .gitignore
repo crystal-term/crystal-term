@@ -1,0 +1,29 @@
+# Crystal dependencies
+lib/
+.shards/
+*.dwarf
+
+# Build artifacts
+bin/
+*.o
+*.a
+*.so
+*.dylib
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local development overrides
+shard.override.yml
+
+# Temporary files
+*.tmp
+*.bak

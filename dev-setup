@@ -1,0 +1,159 @@
+#!/bin/bash
+
+# Crystal Term Development Setup Script
+# This script sets up the local development environment for crystal-term
+
+# Check if we're in the correct directory
+check_directory() {
+    if [ ! -f "CLAUDE.md" ] || [ ! -d "color" ]; then
+        echo "Error: This script must be run from the crystal-term root directory"
+        exit 1
+    fi
+}
+
+# Define the modules
+modules=("color" "cursor" "screen" "spinner" "reader" "prompt" "rich" "terminfo")
+
+# Define the override content template
+create_override_file() {
+    local module_dir=$1
+    cat > "$module_dir/shard.override.yml" << EOF
+# This file overrides dependencies for local development
+# It should be added to .gitignore to prevent accidental commits
+
+dependencies:
+  term-color:
+    path: ../color
+  term-cursor:
+    path: ../cursor
+  term-screen:
+    path: ../screen
+  term-spinner:
+    path: ../spinner
+  term-reader:
+    path: ../reader
+  term-prompt:
+    path: ../prompt
+  term-rich:
+    path: ../rich
+  term-terminfo:
+    path: ../terminfo
+EOF
+}
+
+# UP command - Set up local development
+up() {
+    echo "=== Crystal Term Development Setup (UP) ==="
+    echo
+
+    # Remove the root override file if it exists
+    if [ -f "shard.override.yml" ]; then
+        echo "Removing root shard.override.yml (not needed)..."
+        rm shard.override.yml
+    fi
+
+    echo "Creating shard.override.yml files in each module..."
+    echo
+
+    # Create override files and install dependencies for each module
+    for module in "${modules[@]}"; do
+        if [ -d "$module" ]; then
+            echo "Setting up $module..."
+
+            # Create the override file
+            create_override_file "$module"
+            echo "  ✓ Created shard.override.yml"
+
+            # Add to .gitignore if not already there
+            if [ -f "$module/.gitignore" ]; then
+                if ! grep -q "shard.override.yml" "$module/.gitignore"; then
+                    echo "shard.override.yml" >> "$module/.gitignore"
+                    echo "  ✓ Added to .gitignore"
+                fi
+            else
+                echo "shard.override.yml" > "$module/.gitignore"
+                echo "  ✓ Created .gitignore with override entry"
+            fi
+
+            # Install dependencies
+            echo "  Installing dependencies..."
+            (cd "$module" && shards install) || {
+                echo "  ⚠ Warning: Failed to install dependencies for $module"
+            }
+            echo
+        fi
+    done
+
+    echo "=== Development setup complete! ==="
+    echo
+    echo "Each module now has a shard.override.yml file that uses local paths."
+    echo "These files are ignored by git, so they won't be committed."
+    echo
+    echo "To test inter-module changes:"
+    echo "  1. Make changes to a module (e.g., cursor)"
+    echo "  2. Run 'shards install' in dependent modules (e.g., reader)"
+    echo "  3. The local changes will be used automatically"
+    echo
+    echo "To remove local overrides and use GitHub versions:"
+    echo "  ./dev-setup.sh down"
+    echo
+}
+
+# DOWN command - Remove local development setup
+down() {
+    echo "=== Crystal Term Development Teardown (DOWN) ==="
+    echo
+
+    echo "Removing shard.override.yml files from all modules..."
+    echo
+
+    for module in "${modules[@]}"; do
+        if [ -d "$module" ] && [ -f "$module/shard.override.yml" ]; then
+            echo "Removing override from $module..."
+            rm "$module/shard.override.yml"
+            echo "  ✓ Removed shard.override.yml"
+        fi
+    done
+
+    echo
+    echo "=== Local development overrides removed! ==="
+    echo
+    echo "Modules will now use GitHub dependencies as specified in their shard.yml files."
+    echo "Run 'shards install' in each module to fetch GitHub versions."
+    echo
+    echo "To re-enable local development:"
+    echo "  ./dev-setup.sh up"
+    echo
+}
+
+# Show usage
+usage() {
+    echo "Usage: ./dev-setup.sh [up|down]"
+    echo
+    echo "Commands:"
+    echo "  up    - Set up local development environment (create override files)"
+    echo "  down  - Remove local development environment (remove override files)"
+    echo
+    echo "If no command is specified, 'up' is assumed."
+}
+
+# Main script logic
+check_directory
+
+case "${1:-up}" in
+    up)
+        up
+        ;;
+    down)
+        down
+        ;;
+    -h|--help|help)
+        usage
+        ;;
+    *)
+        echo "Error: Unknown command '$1'"
+        echo
+        usage
+        exit 1
+        ;;
+esac
