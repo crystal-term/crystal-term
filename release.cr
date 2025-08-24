@@ -265,6 +265,7 @@ class ReleaseManager
       puts "\n📝 Writing version files...".colorize(:yellow)
       release_order.each do |module_name|
         if mod = @modules[module_name]?
+          puts "  Processing #{module_name}...".colorize(:blue)
           if mod.write_versions
             puts "✅ Updated #{module_name}".colorize(:green)
           else
