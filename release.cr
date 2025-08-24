@@ -365,6 +365,11 @@ class ReleaseManager
     puts "\n🔗 Updating inter-module dependencies...".colorize(:yellow)
     
     @modules.each do |name, mod|
+      if mod.dependencies.empty?
+        puts "  #{name}: No dependencies to update".colorize(:blue)
+        next
+      end
+      
       mod.dependencies.each do |dep_name|
         if dep_mod = @modules[dep_name]?
           if dep_new_version = dep_mod.new_version
