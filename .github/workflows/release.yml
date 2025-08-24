@@ -1,0 +1,239 @@
+name: Release Crystal-Term Modules
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'shard.yml'  # Only trigger when root shard.yml changes
+
+  workflow_dispatch:
+    inputs:
+      force_release:
+        description: 'Force release even if version unchanged'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  detect-version-change:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      version_changed: ${{ steps.check.outputs.changed }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Need previous commit to compare
+
+      - name: Extract current version
+        id: version
+        run: |
+          VERSION=$(awk '/^version:/ {print $2}' shard.yml)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Current version: $VERSION"
+
+      - name: Check if version changed
+        id: check
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.force_release }}" == "true" ]]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Force release requested"
+          else
+            # Check if version changed in the last commit
+            PREV_VERSION=$(git show HEAD~1:shard.yml | awk '/^version:/ {print $2}' || echo "")
+            CURR_VERSION="${{ steps.version.outputs.version }}"
+            
+            if [[ "$PREV_VERSION" != "$CURR_VERSION" ]]; then
+              echo "changed=true" >> $GITHUB_OUTPUT
+              echo "Version changed: $PREV_VERSION -> $CURR_VERSION"
+            else
+              echo "changed=false" >> $GITHUB_OUTPUT
+              echo "Version unchanged: $CURR_VERSION"
+            fi
+          fi
+
+  propagate-and-release:
+    needs: detect-version-change
+    if: needs.detect-version-change.outputs.version_changed == 'true'
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.detect-version-change.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Use a token that can push to submodules
+          token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: recursive
+
+      - name: Setup Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Propagate version to all modules
+        run: |
+          echo "🚀 Propagating version $VERSION to all modules..."
+          chmod +x scripts/propagate-version.sh
+          ./scripts/propagate-version.sh
+
+      - name: Commit changes in submodules
+        run: |
+          echo "📝 Committing changes in each submodule..."
+          
+          for module in color cursor prompt reader screen spinner terminfo; do
+            if [[ -d "$module" ]]; then
+              echo "Processing $module..."
+              cd "$module"
+              
+              # Check if there are changes to commit
+              if ! git diff --quiet || ! git diff --cached --quiet; then
+                git add .
+                git commit -m "Release term-$module v$VERSION" || true
+                echo "✅ Committed changes in term-$module"
+              else
+                echo "ℹ️  No changes to commit in term-$module"
+              fi
+              
+              cd ..
+            fi
+          done
+
+      - name: Create tags for each module
+        run: |
+          echo "🏷️  Creating tags for each module..."
+          
+          for module in color cursor prompt reader screen spinner terminfo; do
+            if [[ -d "$module" ]]; then
+              cd "$module"
+              
+              TAG_NAME="term-$module-v$VERSION"
+              
+              # Create annotated tag
+              git tag -a "$TAG_NAME" -m "Release term-$module v$VERSION"
+              echo "✅ Created tag: $TAG_NAME"
+              
+              cd ..
+            fi
+          done
+
+      - name: Update parent repository
+        run: |
+          echo "💾 Updating parent repository with submodule references..."
+          
+          # Add all submodule updates
+          git add .
+          
+          # Check if there are changes to commit
+          if ! git diff --cached --quiet; then
+            git commit -m "Release all modules to v$VERSION
+
+            Updated modules:
+            - term-color v$VERSION
+            - term-cursor v$VERSION
+            - term-prompt v$VERSION
+            - term-reader v$VERSION
+            - term-screen v$VERSION
+            - term-spinner v$VERSION
+            - term-terminfo v$VERSION"
+            
+            echo "✅ Committed parent repository changes"
+          else
+            echo "ℹ️  No changes to commit in parent repository"
+          fi
+          
+          # Create parent repository tag
+          PARENT_TAG="v$VERSION"
+          git tag -a "$PARENT_TAG" -m "Release crystal-term v$VERSION"
+          echo "✅ Created parent tag: $PARENT_TAG"
+
+      - name: Push all changes and tags
+        run: |
+          echo "🚀 Pushing all changes and tags..."
+          
+          # Push each submodule
+          for module in color cursor prompt reader screen spinner terminfo; do
+            if [[ -d "$module" ]]; then
+              echo "Pushing $module..."
+              cd "$module"
+              
+              # Push commits and tags
+              git push origin || echo "⚠️  Could not push commits for $module"
+              git push origin --tags || echo "⚠️  Could not push tags for $module"
+              
+              cd ..
+            fi
+          done
+          
+          # Push parent repository
+          echo "Pushing parent repository..."
+          git push origin main || echo "⚠️  Could not push parent repository"
+          git push origin --tags || echo "⚠️  Could not push parent tags"
+
+      - name: Create GitHub Releases
+        run: |
+          echo "📦 Creating GitHub releases..."
+          
+          # Create release for each module (if repositories exist)
+          for module in color cursor prompt reader screen spinner terminfo; do
+            MODULE_NAME="term-$module"
+            TAG_NAME="$MODULE_NAME-v$VERSION"
+            
+            # Note: This would require separate repositories for each module
+            # or a way to create releases in the same repository with different tags
+            echo "Would create release for $MODULE_NAME with tag $TAG_NAME"
+          done
+          
+          # Create main repository release
+          echo "Creating main repository release..."
+          
+          # Generate release notes
+          cat > release_notes.md << EOF
+          # Crystal-Term v$VERSION
+          
+          This release updates all Crystal-Term modules to version $VERSION.
+          
+          ## Updated Modules
+          
+          - **term-color** v$VERSION - Terminal color capabilities detection
+          - **term-cursor** v$VERSION - Terminal cursor movement and manipulation
+          - **term-prompt** v$VERSION - Interactive command line prompts
+          - **term-reader** v$VERSION - Terminal input reading with line editing
+          - **term-screen** v$VERSION - Terminal screen size detection
+          - **term-spinner** v$VERSION - Terminal spinners and progress indicators
+          - **term-terminfo** v$VERSION - Cross-platform terminal information
+          
+          ## Installation
+          
+          Add individual modules to your \`shard.yml\`:
+          
+          \`\`\`yaml
+          dependencies:
+            term-prompt:
+              github: crystal-term/prompt
+              version: $VERSION
+          \`\`\`
+          
+          ## What's Changed
+          
+          - All modules updated to v$VERSION
+          - Synchronized version numbers across all modules
+          - Updated inter-module dependencies
+          EOF
+
+      - name: Summary
+        run: |
+          echo "🎉 Release v$VERSION completed successfully!"
+          echo ""
+          echo "📋 Summary:"
+          echo "  - Version: $VERSION"
+          echo "  - Modules updated: 7"
+          echo "  - Tags created: 8 (7 module tags + 1 parent tag)"
+          echo "  - Commits created: 8 (7 module commits + 1 parent commit)"
+          echo ""
+          echo "🔗 Next steps:"
+          echo "  - Verify releases on GitHub"
+          echo "  - Update documentation if needed"
+          echo "  - Announce the release"

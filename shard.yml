@@ -1,0 +1,29 @@
+name: crystal-term
+version: 0.2.0
+
+authors:
+  - Chris Watson <cawatson1993@gmail.com>
+
+description: |
+  A modular collection of Crystal libraries for building terminal/CLI applications.
+  This is the monorepo root that manages versions for all crystal-term modules.
+
+# Dependencies are managed at the individual module level
+# This shard.yml is primarily for version control across all modules
+
+targets:
+  # Individual modules can be built from their respective directories
+  # This root shard does not define executable targets
+
+crystal: ">= 1.0.0"
+
+license: MIT
+
+# Note: This version will be propagated to all submodules:
+# - term-color
+# - term-cursor  
+# - term-prompt
+# - term-reader
+# - term-screen
+# - term-spinner
+# - term-terminfo
