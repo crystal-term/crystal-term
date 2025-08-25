@@ -1,0 +1,21 @@
+[submodule "color"]
+	path = color
+	url = git@github.com:crystal-term/color.git
+[submodule "cursor"]
+	path = cursor
+	url = git@github.com:crystal-term/cursor.git
+[submodule "prompt"]
+	path = prompt
+	url = git@github.com:crystal-term/prompt.git
+[submodule "reader"]
+	path = reader
+	url = git@github.com:crystal-term/reader.git
+[submodule "screen"]
+	path = screen
+	url = git@github.com:crystal-term/screen.git
+[submodule "spinner"]
+	path = spinner
+	url = git@github.com:crystal-term/spinner.git
+[submodule "terminfo"]
+	path = terminfo
+	url = git@github.com:watzon/terminfo.git

@@ -65,6 +65,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: recursive
           fetch-depth: 0
 
       - name: Setup Git
@@ -124,16 +125,79 @@ jobs:
           - [crystal-term/terminfo](https://github.com/crystal-term/terminfo/releases)
           EOF
 
-      - name: Commit propagated changes
+      - name: Commit changes in submodules
         run: |
+          echo "📝 Committing changes in each submodule..."
+          
+          for module in color cursor prompt reader screen spinner terminfo; do
+            if [[ -d "$module" ]]; then
+              echo "Processing $module..."
+              cd "$module"
+              
+              # Check if there are changes to commit
+              if ! git diff --quiet || ! git diff --cached --quiet; then
+                git add .
+                git commit -m "Release term-$module v$VERSION" || true
+                echo "✅ Committed changes in term-$module"
+              else
+                echo "ℹ️  No changes to commit in term-$module"
+              fi
+              
+              cd ..
+            fi
+          done
+
+      - name: Update parent repository
+        run: |
+          echo "💾 Updating parent repository with submodule references..."
+          
+          # Add all submodule updates to staging
           git add .
+          
+          # Create parent commit for submodule updates
           git commit -m "Release v$VERSION
 
           - Propagated version $VERSION to all modules
           - Updated inter-module dependencies to use version pins
+          - Updated submodule references to latest commits
           - Generated via automated release workflow" || echo "No changes to commit"
 
-      - name: Create and push tag
+      - name: Create tags for each module
+        run: |
+          echo "🏷️  Creating tags for each module..."
+          
+          for module in color cursor prompt reader screen spinner terminfo; do
+            if [[ -d "$module" ]]; then
+              cd "$module"
+              
+              TAG_NAME="v$VERSION"
+              
+              # Create annotated tag in submodule
+              git tag -a "$TAG_NAME" -m "Release term-$module v$VERSION"
+              echo "✅ Created tag: $TAG_NAME in $module"
+              
+              cd ..
+            fi
+          done
+
+      - name: Push submodules and tags
+        run: |
+          echo "🚀 Pushing submodules and tags..."
+          
+          for module in color cursor prompt reader screen spinner terminfo; do
+            if [[ -d "$module" ]]; then
+              echo "Pushing $module..."
+              cd "$module"
+              
+              # Push commits and tags
+              git push origin || echo "⚠️  Could not push commits for $module"
+              git push origin --tags || echo "⚠️  Could not push tags for $module"
+              
+              cd ..
+            fi
+          done
+
+      - name: Create and push parent tag
         run: |
           git tag -a "v$VERSION" -m "Release Crystal-Term v$VERSION"
           git push origin main
