@@ -18,4 +18,4 @@
 	url = git@github.com:crystal-term/spinner.git
 [submodule "terminfo"]
 	path = terminfo
-	url = git@github.com:watzon/terminfo.git
+	url = git@github.com:crystal-term/terminfo.git
