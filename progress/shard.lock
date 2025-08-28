@@ -1,0 +1,19 @@
+# NOTICE: This lockfile contains some overrides from shard.override.yml
+version: 2.0
+shards:
+  spectator:
+    git: https://gitlab.com/arctic-fox/spectator.git
+    version: 0.12.1
+
+  term-cursor: # Overridden
+    path: ../cursor
+    version: 0.2.0
+
+  term-screen: # Overridden
+    path: ../screen
+    version: 0.2.0
+
+  term-spinner: # Overridden
+    path: ../spinner
+    version: 0.3.0
+
