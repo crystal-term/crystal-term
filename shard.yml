@@ -8,8 +8,10 @@ description: |
   A modular collection of Crystal libraries for building terminal/CLI applications.
   This is the monorepo root that manages versions for all crystal-term modules.
 
-# Dependencies are managed at the individual module level
-# This shard.yml is primarily for version control across all modules
+# Root-managed development workflow:
+# - Dependencies below use local paths to the sub-shards under ./shards
+# - Each shard continues to declare GitHub-based dependencies in its own shard.yml
+# - Run all builds/tests/examples from the repo root so the root shard.yml is used
 
 targets:
   # Individual modules can be built from their respective directories
@@ -19,11 +21,31 @@ crystal: ">= 1.0.0"
 
 license: MIT
 
-# Note: This version will be propagated to all submodules:
-# - term-color
-# - term-cursor  
-# - term-prompt
-# - term-reader
-# - term-screen
-# - term-spinner
-# - term-terminfo
+# Use local path dependencies for all sub-shards
+# This lets Crystal resolve inter-module dependencies locally when invoked from root
+
+dependencies:
+  term-color:
+    path: ./shards/color
+  term-cursor:
+    path: ./shards/cursor
+  term-prompt:
+    path: ./shards/prompt
+  term-reader:
+    path: ./shards/reader
+  term-screen:
+    path: ./shards/screen
+  term-spinner:
+    path: ./shards/spinner
+  term-terminfo:
+    path: ./shards/terminfo
+  term-progress:
+    path: ./shards/progress
+
+# Dev dependencies used when running specs from the monorepo root
+# (e.g., `crystal spec shards/reader/spec`)
+
+development_dependencies:
+  spectator:
+    gitlab: arctic-fox/spectator
+    version: ~> 0.12.0

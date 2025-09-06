@@ -1,21 +1,21 @@
 [submodule "color"]
-	path = color
-	url = git@github.com:crystal-term/color.git
+	path = shards/color
+	url = https://github.com/crystal-term/color.git
 [submodule "cursor"]
-	path = cursor
+	path = shards/cursor
 	url = git@github.com:crystal-term/cursor.git
 [submodule "prompt"]
-	path = prompt
+	path = shards/prompt
 	url = git@github.com:crystal-term/prompt.git
 [submodule "reader"]
-	path = reader
+	path = shards/reader
 	url = git@github.com:crystal-term/reader.git
 [submodule "screen"]
-	path = screen
+	path = shards/screen
 	url = git@github.com:crystal-term/screen.git
 [submodule "spinner"]
-	path = spinner
+	path = shards/spinner
 	url = git@github.com:crystal-term/spinner.git
 [submodule "terminfo"]
-	path = terminfo
+	path = shards/terminfo
 	url = git@github.com:crystal-term/terminfo.git
