@@ -71,6 +71,12 @@ module Term
         @row = row
       end
       
+      # Detach this bar from its Multi orchestrator
+      def detach
+        @multi = nil
+        @row = nil
+      end
+      
       def advance(by : Int64 = 1)
         @mutex.synchronize do
           return if finished? || stopped?

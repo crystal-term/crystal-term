@@ -1,5 +1,5 @@
 name: term-progress
-version: 0.1.0
+version: 0.1.1
 
 authors:
   - Chris Watson <cawatson1993@gmail.com>
@@ -9,13 +9,13 @@ description: Terminal progress bars and indicators
 dependencies:
   term-cursor:
     github: crystal-term/cursor
-    branch: master
+    version: ~> 0.3.1
   term-screen:
     github: crystal-term/screen
-    branch: master
+    version: ~> 0.3.1
   term-spinner:
     github: crystal-term/spinner
-    branch: master
+    version: ~> 0.3.2
 
 development_dependencies:
   spectator:

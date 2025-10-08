@@ -1,18 +1,44 @@
 #!/bin/bash
 
-# Crystal Term Development Setup Script
-# This script sets up the local development environment for crystal-term
+# Crystal Term Development Setup (Deprecated)
+#
+# This repository now uses a root-managed development workflow with path
+# dependencies declared in ./shard.yml. You generally no longer need this
+# script. Instead:
+#
+#   1) From the repo root, install deps:
+#        shards install
+#   2) Run module specs from the root, e.g.:
+#        crystal spec shards/cursor/spec
+#        crystal spec shards/reader/spec
+#   3) Run examples from the root, e.g.:
+#        crystal run shards/spinner/examples/basic.cr
+#
+# If you still call this script accidentally, it will just print this message.
+
+set -euo pipefail
+
+usage() {
+  printf "\ncrystal-term: dev-setup is deprecated.\n\n"
+  printf "Use root-managed workflow instead:\n"
+  printf "  shards install\n"
+  printf "  crystal spec shards/<module>/spec\n"
+  printf "  crystal run shards/<module>/examples/<file>.cr\n\n"
+}
+
+usage
+exit 0
 
 # Check if we're in the correct directory
 check_directory() {
-    if [ ! -f "CLAUDE.md" ] || [ ! -d "color" ]; then
+    if [ ! -f "CLAUDE.md" ] || [ ! -d "shards/color" ]; then
         echo "Error: This script must be run from the crystal-term root directory"
         exit 1
     fi
 }
 
 # Define the modules
-modules=("color" "cursor" "screen" "spinner" "reader" "prompt" "rich" "terminfo")
+modules=("color" "cursor" "screen" "spinner" "progress" "reader" "prompt" "rich" "terminfo")
 
 # Define the override content template
 create_override_file() {
@@ -30,6 +56,8 @@ dependencies:
     path: ../screen
   term-spinner:
     path: ../spinner
+  term-progress:
+    path: ../progress
   term-reader:
     path: ../reader
   term-prompt:
@@ -55,34 +83,35 @@ up() {
     echo "Creating shard.override.yml files in each module..."
     echo
 
-    # Create override files and install dependencies for each module
-    for module in "${modules[@]}"; do
-        if [ -d "$module" ]; then
-            echo "Setting up $module..."
+# Create override files and install dependencies for each module
+for module in "${modules[@]}"; do
+    module_dir="shards/$module"
+    if [ -d "$module_dir" ]; then
+        echo "Setting up $module..."
 
-            # Create the override file
-            create_override_file "$module"
-            echo "  ✓ Created shard.override.yml"
+        # Create the override file inside shards/{module}
+        create_override_file "$module_dir"
+        echo "  ✓ Created shard.override.yml"
 
-            # Add to .gitignore if not already there
-            if [ -f "$module/.gitignore" ]; then
-                if ! grep -q "shard.override.yml" "$module/.gitignore"; then
-                    echo "shard.override.yml" >> "$module/.gitignore"
-                    echo "  ✓ Added to .gitignore"
-                fi
-            else
-                echo "shard.override.yml" > "$module/.gitignore"
-                echo "  ✓ Created .gitignore with override entry"
+        # Add to .gitignore if not already there
+        if [ -f "$module_dir/.gitignore" ]; then
+            if ! grep -q "shard.override.yml" "$module_dir/.gitignore"; then
+                echo "shard.override.yml" >> "$module_dir/.gitignore"
+                echo "  ✓ Added to .gitignore"
             fi
-
-            # Install dependencies
-            echo "  Installing dependencies..."
-            (cd "$module" && shards install) || {
-                echo "  ⚠ Warning: Failed to install dependencies for $module"
-            }
-            echo
+        else
+            echo "shard.override.yml" > "$module_dir/.gitignore"
+            echo "  ✓ Created .gitignore with override entry"
         fi
-    done
+
+        # Install dependencies
+        echo "  Installing dependencies..."
+        (cd "$module_dir" && shards install) || {
+            echo "  ⚠ Warning: Failed to install dependencies for $module"
+        }
+        echo
+    fi
+done
 
     echo "=== Development setup complete! ==="
     echo
@@ -95,7 +124,7 @@ up() {
     echo "  3. The local changes will be used automatically"
     echo
     echo "To remove local overrides and use GitHub versions:"
-    echo "  ./dev-setup.sh down"
+    echo "  ./dev-setup down"
     echo
 }
 
@@ -107,13 +136,14 @@ down() {
     echo "Removing shard.override.yml files from all modules..."
     echo
 
-    for module in "${modules[@]}"; do
-        if [ -d "$module" ] && [ -f "$module/shard.override.yml" ]; then
-            echo "Removing override from $module..."
-            rm "$module/shard.override.yml"
-            echo "  ✓ Removed shard.override.yml"
-        fi
-    done
+for module in "${modules[@]}"; do
+    module_dir="shards/$module"
+    if [ -d "$module_dir" ] && [ -f "$module_dir/shard.override.yml" ]; then
+        echo "Removing override from $module..."
+        rm "$module_dir/shard.override.yml"
+        echo "  ✓ Removed shard.override.yml"
+    fi
+_done
 
     echo
     echo "=== Local development overrides removed! ==="
@@ -122,13 +152,13 @@ down() {
     echo "Run 'shards install' in each module to fetch GitHub versions."
     echo
     echo "To re-enable local development:"
-    echo "  ./dev-setup.sh up"
+    echo "  ./dev-setup up"
     echo
 }
 
 # Show usage
 usage() {
-    echo "Usage: ./dev-setup.sh [up|down]"
+    echo "Usage: ./dev-setup [up|down]"
     echo
     echo "Commands:"
     echo "  up    - Set up local development environment (create override files)"

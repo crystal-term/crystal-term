@@ -21,21 +21,26 @@ Each module is a standalone Crystal shard that can be used independently or comb
 
 ### Local Development Setup
 
-Since this is a monorepo with interdependent modules, you need to set up local path overrides for development:
+Root-managed monorepo: dependencies are defined in the root `shard.yml` using local paths.
 
 ```bash
-# Run from the crystal-term root directory
-./dev-setup.sh
-```
+# From the crystal-term root directory
+shards install
 
-This creates a `shard.override.yml` file that tells Crystal to use local paths instead of GitHub URLs for inter-module dependencies. This file is git-ignored and won't be committed.
+# Run module specs from the root
+crystal spec shards/cursor/spec
+crystal spec shards/reader/spec
+
+# Run an example from the root
+crystal run shards/spinner/examples/basic.cr
+```
 
 ### Working with Individual Modules
 
 All development happens within individual module directories. Navigate to the specific module first:
 
 ```bash
-cd color/    # or cursor/, prompt/, reader/, screen/, spinner/, rich/, terminfo/
+cd shards/color/    # or shards/cursor/, shards/prompt/, shards/reader/, shards/screen/, shards/spinner/, shards/rich/, shards/terminfo/
 ```
 
 ### Core Commands
@@ -172,13 +177,7 @@ Study these examples to understand the intended API usage patterns.
 
 ### Local Development
 
-Each module's `shard.yml` references GitHub URLs for dependencies on other crystal-term modules. During development, you need to use local paths instead:
-
-1. **Automatic Setup**: Run `./dev-setup.sh` from the root directory
-2. **Manual Setup**: Create `shard.override.yml` with local paths
-3. **Remove Overrides**: Delete `shard.override.yml` to use GitHub versions
-
-The override file is git-ignored and won't affect published versions.
+Each module’s `shard.yml` continues to reference GitHub URLs. For local development, the root `shard.yml` uses path dependencies to point at `./shards/<module>`. Always run builds/tests/examples from the repo root so Crystal picks up the root `shard.yml`.
 
 ### Testing Inter-Module Changes
 
@@ -191,7 +190,7 @@ When making changes that affect multiple modules:
 Example workflow:
 ```bash
 # Make changes to cursor module
-cd cursor/
+cd shards/cursor/
 # ... edit files ...
 
 # Test in reader module which depends on cursor
