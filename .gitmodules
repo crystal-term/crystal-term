@@ -3,19 +3,19 @@
 	url = https://github.com/crystal-term/color.git
 [submodule "cursor"]
 	path = shards/cursor
-	url = git@github.com:crystal-term/cursor.git
+	url = https://github.com/crystal-term/cursor.git
 [submodule "prompt"]
 	path = shards/prompt
-	url = git@github.com:crystal-term/prompt.git
+	url = https://github.com/crystal-term/prompt.git
 [submodule "reader"]
 	path = shards/reader
-	url = git@github.com:crystal-term/reader.git
+	url = https://github.com/crystal-term/reader.git
 [submodule "screen"]
 	path = shards/screen
-	url = git@github.com:crystal-term/screen.git
+	url = https://github.com/crystal-term/screen.git
 [submodule "spinner"]
 	path = shards/spinner
-	url = git@github.com:crystal-term/spinner.git
+	url = https://github.com/crystal-term/spinner.git
 [submodule "terminfo"]
 	path = shards/terminfo
-	url = git@github.com:crystal-term/terminfo.git
+	url = https://github.com/crystal-term/terminfo.git
