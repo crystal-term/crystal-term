@@ -55,9 +55,9 @@ Within a wave, plans are independent and can run in parallel.
 | 022 | [New shard `term-vt`: VT parser + screen model](022-term-vt-shard.md) | P2 | L | — | root (new `shards/vt` plain dir) | DONE |
 | 023 | [`term-vt` phase 2: PTY + session harness](023-term-vt-pty-harness.md) | P2 | M-L | 022 | root (`shards/vt`) | DONE |
 | 024 | [Dogfood vt: spinner/progress grid specs](024-dogfood-vt-spinner-progress.md) | P2 | M | 022 | spinner, progress, root (vt) | DONE |
-| 025 | [Dogfood vt: reader/prompt PTY integration specs](025-dogfood-vt-reader-prompt.md) | P2 | M | 022, 023, 024 | reader, prompt, root | BLOCKED(reader real-tty echo finding) |
+| 025 | [Dogfood vt: reader/prompt PTY integration specs](025-dogfood-vt-reader-prompt.md) | P2 | M | 022, 023, 024 | reader, prompt, root | DONE (echo spec activated by 027) |
 | 026 | [`term-vt` phase 3: CLI (run/snapshot/script)](026-term-vt-cli.md) | P3 | M-L | 023 (024/025 recommended) | root (`shards/vt`) | TODO |
-| 027 | [reader: fix real-TTY echo/repaint](027-reader-real-tty-echo.md) | P1 | M | 025 | reader, root | TODO |
+| 027 | [reader: fix real-TTY echo/repaint](027-reader-real-tty-echo.md) | P1 | M | 025 | reader, root | DONE |
 | 028 | [prompt: Escape dismisses list questions](028-prompt-escape-dismissal.md) | P2 | S-M | 025 | prompt, root | TODO |
 
 ## Cross-cutting notes
