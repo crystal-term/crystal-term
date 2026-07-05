@@ -21,7 +21,9 @@ Within a wave, plans are independent and can run in parallel.
 - Wave 4: 006 (after 002+005), 016 (after 010+012)
 - Wave 5: 011 (after 002+005+006), 021 (after 002+005+006, ideally 011)
 - Anytime (operator-gated): 018, 019 (after 001), 020
-- Direction, from the 2026-07-05 terminal-testing research: 022, then 023
+- Direction, from the 2026-07-05 terminal-testing research: 022, then 023,
+  then 024 → 025 (dogfood) and 026 (CLI, after 024/025); operator gate:
+  publish `crystal-term/vt` to un-gate standalone spinner/progress CI
 
 ## Index
 
@@ -50,6 +52,9 @@ Within a wave, plans are independent and can run in parallel.
 | 021 | [SPIKE: bare-Escape handling](021-reader-escape-key-spike.md) | P3 | M | 002, 005, 006 | reader, root | DONE |
 | 022 | [New shard `term-vt`: VT parser + screen model](022-term-vt-shard.md) | P2 | L | — | root (new `shards/vt` plain dir) | DONE |
 | 023 | [`term-vt` phase 2: PTY + session harness](023-term-vt-pty-harness.md) | P2 | M-L | 022 | root (`shards/vt`) | DONE |
+| 024 | [Dogfood vt: spinner/progress grid specs](024-dogfood-vt-spinner-progress.md) | P2 | M | 022 | spinner, progress, root (vt) | TODO |
+| 025 | [Dogfood vt: reader/prompt PTY integration specs](025-dogfood-vt-reader-prompt.md) | P2 | M | 022, 023, 024 | reader, prompt, root | TODO |
+| 026 | [`term-vt` phase 3: CLI (run/snapshot/script)](026-term-vt-cli.md) | P3 | M-L | 023 (024/025 recommended) | root (`shards/vt`) | TODO |
 
 ## Cross-cutting notes
 
