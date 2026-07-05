@@ -6,11 +6,18 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu", "macos", "windows"]
     steps:
       - uses: actions/checkout@v4
       - uses: crystal-lang/install-crystal@v1
         with:
           crystal: latest
-      - run: shards install
-      - run: crystal spec
+      - name: Install dependencies
+        run: shards install
+      - name: Run tests
+        run: crystal spec
