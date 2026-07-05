@@ -256,6 +256,8 @@ module Term::VT
       SOURCE     = File.join(__DIR__, "ctty_exec.c")
       HELPER     = File.join(SHARD_ROOT, ".term-vt", "bin", "vt-ctty")
 
+      @@build_lock = Mutex.new
+
       def self.spawn(
         command : String,
         args : Array(String),
@@ -280,17 +282,26 @@ module Term::VT
       end
 
       private def self.ensure_helper : String
+        @@build_lock.synchronize { build_helper }
+      end
+
+      private def self.build_helper : String
         return HELPER if File.exists?(HELPER)
 
         Dir.mkdir_p(File.dirname(HELPER))
+        # Build to a process-unique path and rename so concurrent spawns
+        # never observe (or clobber) a half-written helper binary.
+        staging = "#{HELPER}.#{Process.pid}.tmp"
         output = IO::Memory.new
         error = IO::Memory.new
-        status = Process.run("cc", [SOURCE, "-o", HELPER], output: output, error: error)
+        status = Process.run("cc", [SOURCE, "-o", staging], output: output, error: error)
         unless status.success?
+          File.delete?(staging)
           message = error.to_s.empty? ? output.to_s : error.to_s
           raise PTYUnavailable.new("failed to build vt-ctty helper: #{message}")
         end
 
+        File.rename(staging, HELPER)
         HELPER
       rescue ex : File::Error
         raise PTYUnavailable.new(ex.message || "failed to build vt-ctty helper")
