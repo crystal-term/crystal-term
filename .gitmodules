@@ -19,3 +19,6 @@
 [submodule "terminfo"]
 	path = shards/terminfo
 	url = https://github.com/crystal-term/terminfo.git
+[submodule "progress"]
+	path = shards/progress
+	url = https://github.com/crystal-term/progress.git

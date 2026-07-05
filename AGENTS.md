@@ -1,11 +1,9 @@
 # AGENTS.md - crystal-term monorepo
 
-## Layout: this is 8 shards, 7 of them separate git repos
-- `shards/{color,cursor,screen,terminfo,reader,spinner,prompt}` are git
-  submodules with their own `crystal-term/<name>` remotes. Committing inside
-  them commits to that repo. The root repo only tracks the pointer.
-- `shards/progress` is a plain directory tracked by the root repo; it has no
-  public repo yet.
+## Layout: this is 8 shards, all separate git repos
+- `shards/{color,cursor,screen,terminfo,reader,spinner,prompt,progress}` are
+  git submodules with their own `crystal-term/<name>` remotes. Committing
+  inside them commits to that repo. The root repo only tracks the pointer.
 - `lib/` directories anywhere are vendored dependency installs. Never edit.
 
 ## Verify your changes

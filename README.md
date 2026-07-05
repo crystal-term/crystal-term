@@ -2,8 +2,7 @@
 
 Root checkout for the crystal-term shard family.
 
-This repository contains seven nested shard repositories plus the local
-`progress` shard:
+This repository contains eight nested shard repositories:
 
 | Shard | Path | Ownership |
 | --- | --- | --- |
@@ -14,7 +13,7 @@ This repository contains seven nested shard repositories plus the local
 | `reader` | `shards/reader` | nested Git repo, `crystal-term/reader` |
 | `spinner` | `shards/spinner` | nested Git repo, `crystal-term/spinner` |
 | `prompt` | `shards/prompt` | nested Git repo, `crystal-term/prompt` |
-| `progress` | `shards/progress` | local directory tracked by this root checkout |
+| `progress` | `shards/progress` | nested Git repo, `crystal-term/progress` |
 
 ## Getting started
 

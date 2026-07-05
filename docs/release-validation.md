@@ -89,16 +89,16 @@ local major-version changes rather than the previous released tags.
 
 ## Nested repo and remote caveat
 
-`color`, `cursor`, `screen`, `terminfo`, `reader`, `spinner`, and `prompt` are
-nested Git repositories with their own `crystal-term/<name>` GitHub remotes.
+`color`, `cursor`, `screen`, `terminfo`, `reader`, `spinner`, `prompt`, and
+`progress` are nested Git repositories with their own `crystal-term/<name>`
+GitHub remotes.
 
-`progress` is different: `shards/progress` is a local directory tracked by this
-root checkout, not a nested Git repo. The root remote currently points at
-`git@github.com:crystal-term/crystal-term.git`, but GitHub did not resolve that
-repository during the inventory check on 2026-07-04, and `gh repo list
-crystal-term` did not list a public `crystal-term/crystal-term` repository.
-Treat progress issue tracking and release ownership as a root-checkout concern
-until a dedicated progress repository or working root remote exists.
+`progress` joined them on 2026-07-04: `crystal-term/progress` was seeded from
+this root checkout with a fresh single-commit history and tagged `v1.0.0`, and
+`shards/progress` became a git submodule pointing at it. The root remote still
+points at `git@github.com:crystal-term/crystal-term.git`, which GitHub did not
+resolve during the inventory check on 2026-07-04; treat root-checkout issue
+tracking as unavailable until that remote exists.
 
 ## Current GitHub issue inventory
 
@@ -114,4 +114,5 @@ for each public crystal-term shard repository.
 | `crystal-term/reader` | [#8 Tagged version 0.3.2 does not compile with Crystal 1.18.2](https://github.com/crystal-term/reader/issues/8), updated 2026-05-23 |
 | `crystal-term/spinner` | None |
 | `crystal-term/prompt` | [#15 Prompt error - Regex.escape](https://github.com/crystal-term/prompt/issues/15), updated 2026-05-19; [#3 Error with enum_select](https://github.com/crystal-term/prompt/issues/3), updated 2021-10-27; [#2 The selection filtering doesn't work](https://github.com/crystal-term/prompt/issues/2), updated 2020-06-12 |
-| `progress` / root | No queryable public GitHub issue tracker found for `crystal-term/crystal-term` on 2026-07-04 |
+| `crystal-term/progress` | None (repository seeded 2026-07-04) |
+| root | No queryable public GitHub issue tracker found for `crystal-term/crystal-term` on 2026-07-04 |
