@@ -83,6 +83,8 @@ YAML
     path: ../cursor
   term-screen:
     path: ../screen
+  term-vt:
+    path: ../vt
 YAML
       ;;
     spinner)
@@ -103,6 +105,8 @@ YAML
     path: ../reader
   term-screen:
     path: ../screen
+  term-vt:
+    path: ../vt
 YAML
       ;;
     progress)
