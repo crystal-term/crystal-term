@@ -33,7 +33,7 @@ Within a wave, plans are independent and can run in parallel.
 | 005 | [Reader handler registry (leak fix)](005-reader-handler-registry.md) | P1 | M | 003, 004 | reader, prompt | TODO |
 | 006 | [read_line + history fixes](006-reader-read-line-and-history.md) | P2 | M | 002, 005 | reader | TODO |
 | 007 | [Spinner testability + concurrency](007-spinner-testability-and-concurrency.md) | P2 | M | — | spinner, root (progress) | DONE |
-| 008 | [Prompt small-bug sweep](008-prompt-small-bug-sweep.md) | P2 | M | 004 | prompt | TODO |
+| 008 | [Prompt small-bug sweep](008-prompt-small-bug-sweep.md) | P2 | M | 004 | prompt | DONE |
 | 009 | [Color bug sweep](009-color-bug-sweep.md) | P2 | S-M | — | color | DONE |
 | 010 | [Cursor/screen/terminfo fixes](010-cursor-screen-terminfo-fixes.md) | P2 | M | — | cursor, screen, terminfo | DONE |
 | 011 | [Reader test seam](011-reader-test-seam.md) | P2 | M | 002, 005, 006 | reader | TODO |
