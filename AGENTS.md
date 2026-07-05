@@ -25,11 +25,11 @@
 ## Dependency and release order
 - Order: `color`, `cursor`, `screen`, `terminfo`, `reader`, `spinner`,
   `prompt`, `progress`.
-- Local deps: `reader` uses `cursor` and `screen`; `spinner` uses `cursor`;
-  `prompt` uses `color`, `cursor`, `reader`, and `screen`; `progress` uses
-  `cursor`, `screen`, and `spinner`.
-- Releases go in layers: leaves (`color`/`cursor`/`screen`/`terminfo`), then
-  middle (`reader`/`spinner`), then top (`prompt`/`progress`). See
+- Local deps: `terminfo` uses `cursor` and `screen`; `reader` uses `cursor`
+  and `screen`; `spinner` uses `cursor`; `prompt` uses `color`, `cursor`,
+  `reader`, and `screen`; `progress` uses `cursor`, `screen`, and `spinner`.
+- Releases go in layers: leaves (`color`/`cursor`/`screen`), then middle
+  (`terminfo`/`reader`/`spinner`), then top (`prompt`/`progress`). See
   `docs/release-validation.md`.
 
 ## Test frameworks
