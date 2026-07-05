@@ -82,6 +82,18 @@ describe Term::Progress::Bar do
       bar.advance
       bar.finished?.should be_true
     end
+
+    it "clears rerenders with an erase-line escape" do
+      io = TestIO.new
+      bar = Term::Progress::Bar.new(total: 10, format: ":current/:total", output: io)
+
+      bar.advance
+      io.clear
+      bar.advance
+
+      io.output.should contain("\e[2K")
+      io.output.match(/\r +\r/).should be_nil
+    end
   end
   
   describe "#update" do
@@ -232,6 +244,24 @@ describe Term::Progress::Bar do
       
       bar.update_tokens(title: "Second")
       bar.tokens["title"].should eq("Second")
+    end
+
+    it "computes only the referenced bar token" do
+      bar = Term::Progress::Bar.new(format: ":bar", width: 10)
+
+      bar.advance
+
+      bar.tokens.keys.sort.should eq(["bar"])
+    end
+
+    it "renders current and total without computing bar tokens" do
+      io = TestIO.new
+      bar = Term::Progress::Bar.new(total: 10, format: ":current/:total", output: io)
+
+      bar.advance(2)
+
+      bar.tokens.keys.sort.should eq(["current", "total"])
+      io.output.should contain("2/10")
     end
   end
   

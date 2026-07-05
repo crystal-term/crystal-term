@@ -198,7 +198,7 @@ module Term
         end
         
         if template.includes?(":content")
-          template.gsub(/:content/, content)
+          template.gsub(":content", content)
         else
           template + content
         end

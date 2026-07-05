@@ -138,6 +138,17 @@ describe Term::Progress::Formatters do
       result = Term::Progress::Formatters.format("[:bar] :percent :current/:total", tokens)
       result.should eq("[█████░░░░░] 50% 50/100")
     end
+
+    it "replaces current total and bar tokens literally" do
+      tokens = {
+        "current" => "5",
+        "total" => "10",
+        "bar" => "█████░░░░░"
+      }
+
+      result = Term::Progress::Formatters.format(":current/:total [:bar]", tokens)
+      result.should eq("5/10 [█████░░░░░]")
+    end
     
     it "handles missing tokens gracefully" do
       tokens = {"percent" => "50%"}
