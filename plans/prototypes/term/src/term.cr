@@ -1,0 +1,7 @@
+require "term-color"
+require "term-cursor"
+require "term-screen"
+require "term-terminfo"
+require "term-reader"
+require "term-spinner"
+require "term-prompt"
