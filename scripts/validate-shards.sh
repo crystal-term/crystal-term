@@ -68,6 +68,14 @@ is_known_shard() {
 
 local_dependency_lines() {
   case "$1" in
+    terminfo)
+      cat <<'YAML'
+  term-cursor:
+    path: ../cursor
+  term-screen:
+    path: ../screen
+YAML
+      ;;
     reader)
       cat <<'YAML'
   term-cursor:

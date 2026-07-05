@@ -63,6 +63,7 @@ shards:
 
 | Shard | Local dependencies |
 | --- | --- |
+| `terminfo` | `term-cursor`, `term-screen` |
 | `reader` | `term-cursor`, `term-screen` |
 | `spinner` | `term-cursor` |
 | `prompt` | `term-color`, `term-cursor`, `term-reader`, `term-screen` |
@@ -77,8 +78,8 @@ stops unless `--force-overrides` is supplied.
 For a new major version, publish leaves first, then direct dependents, then
 top-level consumers:
 
-1. Leaves: `color`, `cursor`, `screen`, `terminfo`
-2. Middle layer: `reader`, `spinner`
+1. Leaves: `color`, `cursor`, `screen`
+2. Middle layer: `terminfo`, `reader`, `spinner`
 3. Top layer: `prompt`, `progress`
 
 After each layer is tagged, run the harness in released mode for the next layer.
