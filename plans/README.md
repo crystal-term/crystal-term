@@ -30,7 +30,7 @@ Within a wave, plans are independent and can run in parallel.
 | 002 | [Reader raw-mode inversion](002-reader-raw-mode-inversion.md) | P1 | S | 001 | reader | DONE |
 | 003 | [Enter key + subscribe macro fail-loud](003-enter-key-and-subscribe-macro.md) | P1 | S | — | reader, prompt | DONE |
 | 004 | [Prompt characterization tests](004-prompt-characterization-tests.md) | P1 | L | 003 | prompt | DONE |
-| 005 | [Reader handler registry (leak fix)](005-reader-handler-registry.md) | P1 | M | 003, 004 | reader, prompt | TODO |
+| 005 | [Reader handler registry (leak fix)](005-reader-handler-registry.md) | P1 | M | 003, 004 | reader, prompt | DONE |
 | 006 | [read_line + history fixes](006-reader-read-line-and-history.md) | P2 | M | 002, 005 | reader | TODO |
 | 007 | [Spinner testability + concurrency](007-spinner-testability-and-concurrency.md) | P2 | M | — | spinner, root (progress) | DONE |
 | 008 | [Prompt small-bug sweep](008-prompt-small-bug-sweep.md) | P2 | M | 004 | prompt | DONE |
@@ -41,7 +41,7 @@ Within a wave, plans are independent and can run in parallel.
 | 013 | [Color capability detection + NO_COLOR](013-color-capability-detection.md) | P3 | M | 009 | color, prompt | DONE |
 | 014 | [Spectator hygiene](014-spectator-hygiene.md) | P3 | S | — | 6 submodules + root | DONE |
 | 015 | [Root AGENTS.md](015-root-agents-md.md) | P3 | S | — | root | DONE |
-| 016 | [ANSI/size/keys dedup](016-ansi-dedup.md) | P3 | M-L | 010, 012 | terminfo, cursor, reader, root | TODO |
+| 016 | [ANSI/size/keys dedup](016-ansi-dedup.md) | P3 | M-L | 010, 012 | terminfo, cursor, reader, root | DONE |
 | 017 | [README fixes (spinner, prompt)](017-readme-fixes.md) | P3 | S | 007 | spinner, prompt | DONE |
 | 018 | [Progress shard public home](018-progress-shard-home.md) | P3 | M | — (operator) | root, new repo | BLOCKED(operator: seed+tag crystal-term/progress repo; prep files merged) |
 | 019 | [SPIKE: Windows CI](019-windows-ci-spike.md) | P3 | M | 001 (operator) | all submodules, root | DONE (staging; CI runs operator-gated) |
