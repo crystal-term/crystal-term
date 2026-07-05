@@ -48,7 +48,7 @@ Within a wave, plans are independent and can run in parallel.
 | 019 | [SPIKE: Windows CI](019-windows-ci-spike.md) | P3 | M | 001 (operator) | all submodules, root | DONE (staging; CI runs operator-gated) |
 | 020 | [SPIKE: `term` umbrella shard](020-term-umbrella-spike.md) | P3 | S-M | — | root (prototype only) | DONE |
 | 021 | [SPIKE: bare-Escape handling](021-reader-escape-key-spike.md) | P3 | M | 002, 005, 006 | reader, root | DONE |
-| 022 | [New shard `term-vt`: VT parser + screen model](022-term-vt-shard.md) | P2 | L | — | root (new `shards/vt` plain dir) | TODO |
+| 022 | [New shard `term-vt`: VT parser + screen model](022-term-vt-shard.md) | P2 | L | — | root (new `shards/vt` plain dir) | DONE |
 | 023 | [`term-vt` phase 2: PTY + session harness](023-term-vt-pty-harness.md) | P2 | M-L | 022 | root (`shards/vt`) | TODO |
 
 ## Cross-cutting notes

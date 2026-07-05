@@ -2,11 +2,13 @@
 
 Root checkout for the crystal-term shard family.
 
-This repository contains eight nested shard repositories:
+This repository contains eight nested shard repositories and one root-tracked
+plain shard directory:
 
 | Shard | Path | Ownership |
 | --- | --- | --- |
 | `color` | `shards/color` | nested Git repo, `crystal-term/color` |
+| `vt` | `shards/vt` | plain directory, pre-publication |
 | `cursor` | `shards/cursor` | nested Git repo, `crystal-term/cursor` |
 | `screen` | `shards/screen` | nested Git repo, `crystal-term/screen` |
 | `terminfo` | `shards/terminfo` | nested Git repo, `crystal-term/terminfo` |
@@ -39,7 +41,7 @@ scripts/validate-shards.sh --local
 The harness validates shards in dependency order:
 
 ```text
-color, cursor, screen, terminfo, reader, spinner, prompt, progress
+color, vt, cursor, screen, terminfo, reader, spinner, prompt, progress
 ```
 
 For each selected shard it runs `shards install` sequentially, then
