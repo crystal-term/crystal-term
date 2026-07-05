@@ -11,6 +11,7 @@ module Term::VT
     getter title : String?
     getter bell_count : Int32
     getter unhandled : Array(String)
+    property on_report : Proc(Bytes, Nil)?
 
     private struct SavedCursor
       property row : Int32
@@ -54,6 +55,7 @@ module Term::VT
       @title = nil
       @bell_count = 0
       @unhandled = [] of String
+      @on_report = nil
       @parser = Parser.new(self)
     end
 
@@ -172,6 +174,12 @@ module Term::VT
         restore_cursor
       when 'm'
         apply_sgr(params)
+      when 'n'
+        if intermediates.empty? && param(params, 0, 0) == 6
+          report_cursor_position
+        else
+          record_unhandled("CSI #{intermediates}#{params.map(&.raw).join(';')}#{final}")
+        end
       else
         record_unhandled("CSI #{intermediates}#{params.map(&.raw).join(';')}#{final}")
       end
@@ -232,8 +240,83 @@ module Term::VT
       @scrollback.map { |row| row_to_text(row) }.to_a
     end
 
+    def dup : self
+      copy = Screen.new(@rows, @cols, @scrollback_limit)
+      copy.copy_from(self)
+      copy
+    end
+
+    protected def copy_from(source : Screen) : Nil
+      @primary = clone_grid(source.primary_for_copy)
+      @alternate = clone_grid(source.alternate_for_copy)
+      @scrollback = source.scrollback_for_copy
+      @cursor_row = source.cursor_row_for_copy
+      @cursor_col = source.cursor_col_for_copy
+      @cursor_visible = source.cursor_visible?
+      @pending_wrap = source.pending_wrap_for_copy
+      @style = source.style_for_copy
+      @saved_primary = source.saved_primary_for_copy
+      @saved_alternate = source.saved_alternate_for_copy
+      @autowrap = source.autowrap_for_copy
+      @alt_screen = source.alt_screen?
+      @title = source.title
+      @bell_count = source.bell_count
+      @unhandled = source.unhandled.dup
+      @on_report = source.on_report
+    end
+
+    protected def primary_for_copy
+      @primary
+    end
+
+    protected def alternate_for_copy
+      @alternate
+    end
+
+    protected def scrollback_for_copy
+      clone_scrollback
+    end
+
+    protected def cursor_row_for_copy
+      @cursor_row
+    end
+
+    protected def cursor_col_for_copy
+      @cursor_col
+    end
+
+    protected def pending_wrap_for_copy
+      @pending_wrap
+    end
+
+    protected def style_for_copy
+      @style
+    end
+
+    protected def saved_primary_for_copy
+      @saved_primary
+    end
+
+    protected def saved_alternate_for_copy
+      @saved_alternate
+    end
+
+    protected def autowrap_for_copy
+      @autowrap
+    end
+
     private def build_grid : Array(Array(Cell))
       Array.new(@rows) { blank_row }
+    end
+
+    private def clone_grid(source : Array(Array(Cell))) : Array(Array(Cell))
+      source.map(&.dup)
+    end
+
+    private def clone_scrollback : Deque(Array(Cell))
+      copy = Deque(Array(Cell)).new
+      @scrollback.each { |row| copy << row.dup }
+      copy
     end
 
     private def blank_row(style : Style = Style::DEFAULT) : Array(Cell)
@@ -541,6 +624,12 @@ module Term::VT
         @style.fg = color
       else
         @style.bg = color
+      end
+    end
+
+    private def report_cursor_position : Nil
+      if callback = @on_report
+        callback.call("\e[#{@cursor_row + 1};#{@cursor_col + 1}R".to_slice)
       end
     end
 

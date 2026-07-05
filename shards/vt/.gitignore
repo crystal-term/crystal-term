@@ -1,6 +1,7 @@
 /lib/
 /bin/
 /.shards/
+/.term-vt/
 *.dwarf
 
 # Libraries don't need dependency lock
