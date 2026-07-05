@@ -10,6 +10,21 @@ describe Term::VT::Screen do
     screen.title.should eq("second")
   end
 
+  it "ignores OSC payloads without a semicolon" do
+    screen = Term::VT::Screen.new
+    screen.feed("\e]104\a")
+
+    screen.title.should be_nil
+    screen.text.should eq("")
+  end
+
+  it "sets an explicitly empty title" do
+    screen = Term::VT::Screen.new
+    screen.feed("\e]0;old\a\e]0;\a")
+
+    screen.title.should eq("")
+  end
+
   it "ignores other OSC commands without recording them as unhandled" do
     screen = Term::VT::Screen.new
     screen.feed("\e]8;id=1;https://example.test\e\\link\e]8;;\e\\")

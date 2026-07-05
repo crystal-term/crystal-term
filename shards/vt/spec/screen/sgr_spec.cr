@@ -45,6 +45,20 @@ describe Term::VT::Screen do
     screen.cell(0, 0).style.bg.should eq(Term::VT::Color.indexed(7))
   end
 
+  it "applies colon truecolor with zero components" do
+    screen = Term::VT::Screen.new(rows: 1, cols: 2)
+    screen.feed("\e[38:2::255:0:0mA")
+
+    screen.cell(0, 0).style.fg.should eq(Term::VT::Color.rgb(255, 0, 0))
+  end
+
+  it "applies colon truecolor without a colorspace id" do
+    screen = Term::VT::Screen.new(rows: 1, cols: 2)
+    screen.feed("\e[38:2:0:0:255mA")
+
+    screen.cell(0, 0).style.fg.should eq(Term::VT::Color.rgb(0, 0, 255))
+  end
+
   it "resets foreground, background, and all style state" do
     screen = Term::VT::Screen.new(rows: 1, cols: 4)
     screen.feed("\e[31;42;1mA\e[39;49mB\e[0mC")

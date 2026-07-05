@@ -178,8 +178,8 @@ module Term::VT
     end
 
     def osc_dispatch(data : String)
-      command, value = data.split(';', 2)
-      @title = value if (command == "0" || command == "2") && value
+      command, separator, value = data.partition(';')
+      @title = value if (command == "0" || command == "2") && !separator.empty?
     end
 
     def resize(rows : Int32, cols : Int32) : self
@@ -509,7 +509,9 @@ module Term::VT
         when 5
           set_color(Color.indexed(param.subparams[1]? || 0), foreground) if param.subparams.size >= 2
         when 2
-          components = param.subparams[1..].reject { |value| value == 0 && param.subparams.size > 4 } || [] of Int32
+          # 38:2:r:g:b (3 components) or ITU form 38:2:<colorspace>:r:g:b (4+)
+          components = param.subparams[1..]
+          components = components[1..] if components.size >= 4
           if components.size >= 3
             set_color(Color.rgb(components[0], components[1], components[2]), foreground)
           end
