@@ -15,7 +15,7 @@ module Term
       def format(template : String, tokens : Hash(String, String)) : String
         result = template.dup
         tokens.each do |key, value|
-          result = result.gsub(/:#{key}/, value)
+          result = result.gsub(":#{key}", value)
         end
         result
       end

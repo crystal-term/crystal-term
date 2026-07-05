@@ -24,6 +24,7 @@ module Term
       @head_char : String?
       @output : IO
       @tokens : Hash(String, String)
+      @format_tokens : Set(String)
       @state : State
       @meter : Meter
       @multi : Multi?
@@ -35,6 +36,7 @@ module Term
         @total = total
         @current = 0_i64
         @format = options[:format]?.try(&.to_s) || DEFAULT_FORMAT
+        @format_tokens = extract_format_tokens(@format)
         @width = options[:width]? || calculate_width
         
         @complete_char = options[:complete_char]?.try(&.to_s) || "█"
@@ -174,30 +176,60 @@ module Term
       end
       
       private def update_tokens
-        bar_width = calculate_bar_width
-        
-        # Set different bar representations based on what's used in format
-        @tokens["bar"] = Formatters.render_bar(bar_width, ratio, @complete_char, @incomplete_char, @head_char)
-        @tokens["blocks"] = Formatters.render_blocks(bar_width, ratio)
-        @tokens["dots"] = Formatters.render_dots(@current, @total, bar_width)
-        # Optional spinner token (set by spinner integration). Default to empty.
-        @tokens["spinner"] = @tokens["spinner"]? || ""
-        @tokens["percent"] = Formatters.format_percentage(ratio)
-        @tokens["current"] = @current.to_s
-        @tokens["total"] = @total.to_s
-        @tokens["fraction"] = Formatters.format_fraction(@current, @total)
-        @tokens["elapsed"] = @meter.format_time(@meter.elapsed_time.total_seconds)
-        
-        if eta_seconds = @meter.eta(@current, @total)
-          @tokens["eta"] = @meter.format_time(eta_seconds)
-        else
-          @tokens["eta"] = "--:--"
+        bar_width = nil
+        if uses_format_token?("bar") || uses_format_token?("blocks") || uses_format_token?("dots")
+          bar_width = calculate_bar_width
         end
         
-        @tokens["rate"] = "%.1f/s" % @meter.rate
-        @tokens["mean_rate"] = "%.1f/s" % @meter.mean_rate
-        @tokens["byte_rate"] = @meter.format_rate(@meter.rate)
-        @tokens["mean_byte_rate"] = @meter.format_rate(@meter.mean_rate)
+        if uses_format_token?("bar")
+          @tokens["bar"] = Formatters.render_bar(bar_width.not_nil!, ratio, @complete_char, @incomplete_char, @head_char)
+        end
+        if uses_format_token?("blocks")
+          @tokens["blocks"] = Formatters.render_blocks(bar_width.not_nil!, ratio)
+        end
+        if uses_format_token?("dots")
+          @tokens["dots"] = Formatters.render_dots(@current, @total, bar_width.not_nil!)
+        end
+        if uses_format_token?("spinner")
+          # Optional spinner token (set by spinner integration). Default to empty.
+          @tokens["spinner"] = @tokens["spinner"]? || ""
+        end
+        if uses_format_token?("percent")
+          @tokens["percent"] = Formatters.format_percentage(ratio)
+        end
+        if uses_format_token?("current")
+          @tokens["current"] = @current.to_s
+        end
+        if uses_format_token?("total")
+          @tokens["total"] = @total.to_s
+        end
+        if uses_format_token?("fraction")
+          @tokens["fraction"] = Formatters.format_fraction(@current, @total)
+        end
+        if uses_format_token?("elapsed")
+          @tokens["elapsed"] = @meter.format_time(@meter.elapsed_time.total_seconds)
+        end
+        
+        if uses_format_token?("eta")
+          if eta_seconds = @meter.eta(@current, @total)
+            @tokens["eta"] = @meter.format_time(eta_seconds)
+          else
+            @tokens["eta"] = "--:--"
+          end
+        end
+        
+        if uses_format_token?("rate")
+          @tokens["rate"] = "%.1f/s" % @meter.rate
+        end
+        if uses_format_token?("mean_rate")
+          @tokens["mean_rate"] = "%.1f/s" % @meter.mean_rate
+        end
+        if uses_format_token?("byte_rate")
+          @tokens["byte_rate"] = @meter.format_rate(@meter.rate)
+        end
+        if uses_format_token?("mean_byte_rate")
+          @tokens["mean_byte_rate"] = @meter.format_rate(@meter.mean_rate)
+        end
       end
       
       private def render(final = false, message = "")
@@ -232,9 +264,7 @@ module Term
         if multi = @multi
           # Multi handles line clearing
         else
-          # Clear the entire terminal line to prevent leftover characters
-          terminal_width = Term::Screen.width
-          @output.print "\r" + (" " * terminal_width) + "\r"
+          @output.print "\r\e[2K"
           @output.flush
         end
       end
@@ -266,6 +296,18 @@ module Term
         
         available_width = terminal_width - format_without_bar.size - 2
         Math.max(10, Math.min(available_width, @width))
+      end
+
+      private def extract_format_tokens(format : String) : Set(String)
+        tokens = Set(String).new
+        format.scan(/:(\w+)/) do |match|
+          tokens << match[1]
+        end
+        tokens
+      end
+
+      private def uses_format_token?(name : String) : Bool
+        @format_tokens.includes?(name)
       end
     end
   end
