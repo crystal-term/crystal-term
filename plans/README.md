@@ -46,7 +46,7 @@ Within a wave, plans are independent and can run in parallel.
 | 018 | [Progress shard public home](018-progress-shard-home.md) | P3 | M | — (operator) | root, new repo | DONE |
 | 019 | [SPIKE: Windows CI](019-windows-ci-spike.md) | P3 | M | 001 (operator) | all submodules, root | DONE (staging; CI runs operator-gated) |
 | 020 | [SPIKE: `term` umbrella shard](020-term-umbrella-spike.md) | P3 | S-M | — | root (prototype only) | DONE |
-| 021 | [SPIKE: bare-Escape handling](021-reader-escape-key-spike.md) | P3 | M | 002, 005, 006 | reader, root | TODO |
+| 021 | [SPIKE: bare-Escape handling](021-reader-escape-key-spike.md) | P3 | M | 002, 005, 006 | reader, root | DONE |
 
 ## Cross-cutting notes
 
