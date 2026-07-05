@@ -27,7 +27,7 @@ Within a wave, plans are independent and can run in parallel.
 | # | Plan | Priority | Effort | Depends on | Repos touched | Status |
 |---|------|----------|--------|------------|---------------|--------|
 | 001 | [Root CI + submodule HTTPS](001-root-ci-and-submodule-https.md) | P1 | S | — | root | DONE |
-| 002 | [Reader raw-mode inversion](002-reader-raw-mode-inversion.md) | P1 | S | 001 | reader | TODO |
+| 002 | [Reader raw-mode inversion](002-reader-raw-mode-inversion.md) | P1 | S | 001 | reader | DONE |
 | 003 | [Enter key + subscribe macro fail-loud](003-enter-key-and-subscribe-macro.md) | P1 | S | — | reader, prompt | DONE |
 | 004 | [Prompt characterization tests](004-prompt-characterization-tests.md) | P1 | L | 003 | prompt | TODO |
 | 005 | [Reader handler registry (leak fix)](005-reader-handler-registry.md) | P1 | M | 003, 004 | reader, prompt | TODO |
