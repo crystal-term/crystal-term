@@ -1,0 +1,105 @@
+# term-vt
+
+Terminal (VT/ANSI) emulation: escape-sequence parser and cell-grid screen
+model, built for testing terminal apps.
+
+`term-vt` is an in-process emulator core. Feed bytes from a terminal UI and
+assert on the screen a user would see:
+
+```crystal
+require "term-vt"
+
+screen = Term::VT::Screen.new(rows: 5, cols: 80)
+screen.feed(File.read("spinner_success.bin").to_slice)
+
+screen.text.should eq("[\u{2714}] Loading done")
+screen.contains?("Loading").should be_true
+screen.cursor.should eq({row: 1, col: 0})
+```
+
+Plan 023 adds the PTY/subprocess session harness on top of this core. This
+shard deliberately does not spawn processes or manage terminal timing.
+
+## API
+
+- `Term::VT::Parser` is a stateful VT/ANSI byte parser. It accepts
+  `feed(String)` and `feed(Bytes)` and calls a `Term::VT::Performer`.
+- `Term::VT::Screen` includes `Performer` and maintains a cell grid, primary
+  and alternate buffers, scrollback, cursor state, current style, title,
+  bell count, and a bounded `unhandled` debug list.
+- `Term::VT::Width.of(char)` returns terminal cell width `0`, `1`, or `2`.
+- `Term::VT::Style`, `Term::VT::Color`, and `Term::VT::Cell` are value
+  structs used by the grid and snapshot APIs.
+
+Useful screen methods:
+
+```crystal
+screen.feed(bytes_or_string)  # => self
+screen.row_text(0)            # visible row, trailing whitespace trimmed
+screen.rows_text              # Array(String)
+screen.text                   # rows joined with newlines, trailing blank rows trimmed
+screen.snapshot               # exact padded grid
+screen.styled_snapshot        # run-length style rendering
+screen.cell(row, col)         # Term::VT::Cell
+screen.find("Done")           # {row: Int32, col: Int32}?
+screen.contains?("Done")      # Bool
+screen.scrollback_text        # Array(String)
+screen.unhandled              # bounded debug list for skipped sequences
+```
+
+## Supported Sequences
+
+| Family | Sequences |
+| --- | --- |
+| UTF-8 | Ground-state UTF-8, including split code points and invalid-byte replacement. |
+| C0 | `BEL`, `BS`, `HT`, `LF`/`VT`/`FF`, `CR`, `CAN`, `SUB`, `ESC`. |
+| ESC | `DECSC`/`DECRC` (`ESC 7`/`ESC 8`), `IND`, `RI`, `NEL`, `RIS`, charset designations consumed and ignored. |
+| CSI cursor | `CUU`, `CUD`, `CUF`, `CUB`, `CNL`, `CPL`, `CHA`, `VPA`, `CUP`, `HVP`. |
+| CSI erase/edit | `ED` `0`/`1`/`2`/`3`, `EL` `0`/`1`/`2`, `ICH`, `DCH`, `ECH`, `IL`, `DL`, `SU`, `SD`. |
+| CSI save/restore | `CSI s`, `CSI u`. |
+| SGR | Reset, text flags, flag resets, 8-color, bright-color, indexed color, truecolor, `39`, `49`; semicolon and colon extended-color forms. |
+| Private modes | `?25` cursor visibility, `?7` autowrap, `?47`/`?1047` alternate screen, `?1049` alternate screen with cursor save/restore. |
+| OSC | `OSC 0` and `OSC 2` set `screen.title`; other OSC commands are consumed. |
+| Strings | DCS/SOS/PM/APC payloads are consumed and discarded until `ST`. |
+
+Unknown or unsupported sequences are consumed silently and appended to
+`screen.unhandled` when they are useful for debugging. The list is capped at
+100 entries.
+
+## Snapshot Format
+
+`screen.snapshot` is the exact grid contract for golden files: every row is
+present, every row is padded to `screen.cols`, and rows are joined by `\n`.
+Styling is ignored.
+
+`screen.styled_snapshot` is a run-length style contract. It emits one line per
+visible row, trims trailing default blank cells, and writes segments as:
+
+```text
+{attrs}text{attrs}more
+```
+
+The default style is `{}`. Attribute names are emitted in this order:
+`bold dim italic underline blink inverse hidden strike fg=<n|#rrggbb>
+bg=<n|#rrggbb>`.
+
+Example:
+
+```text
+{bold fg=2}Done{} in {fg=#010203}3s
+```
+
+## Unsupported In Phase 1
+
+These are intentionally out of scope and should be added without changing the
+public parser/screen split:
+
+- Scroll regions (`DECSTBM`).
+- Tab-stop set/clear (`HTS`, `TBC`); fixed 8-column tab stops are supported.
+- Insert mode (`IRM`).
+- Origin mode (`DECOM`).
+- Mouse protocols.
+- DSR/CPR responses.
+- Grapheme clusters; width-0 combining marks are dropped.
+- Resize reflow; `resize` truncates/pads and clamps the cursor.
+- PTY/subprocess harness, wait primitives, and key sending; see plan 023.

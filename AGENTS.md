@@ -1,9 +1,11 @@
 # AGENTS.md - crystal-term monorepo
 
-## Layout: this is 8 shards, all separate git repos
+## Layout: this is 9 shards
 - `shards/{color,cursor,screen,terminfo,reader,spinner,prompt,progress}` are
   git submodules with their own `crystal-term/<name>` remotes. Committing
   inside them commits to that repo. The root repo only tracks the pointer.
+- `shards/vt` is a plain directory tracked by the root repo (pre-publication,
+  not a submodule yet). Commit its changes in the root repo.
 - `lib/` directories anywhere are vendored dependency installs. Never edit.
 
 ## Verify your changes
@@ -21,17 +23,18 @@
   unless the task explicitly says otherwise.
 
 ## Dependency and release order
-- Order: `color`, `cursor`, `screen`, `terminfo`, `reader`, `spinner`,
-  `prompt`, `progress`.
+- Order: `color`, `vt`, `cursor`, `screen`, `terminfo`, `reader`,
+  `spinner`, `prompt`, `progress`.
 - Local deps: `terminfo` uses `cursor` and `screen`; `reader` uses `cursor`
   and `screen`; `spinner` uses `cursor`; `prompt` uses `color`, `cursor`,
-  `reader`, and `screen`; `progress` uses `cursor`, `screen`, and `spinner`.
-- Releases go in layers: leaves (`color`/`cursor`/`screen`), then middle
+  `reader`, and `screen`; `progress` uses `cursor`, `screen`, and `spinner`;
+  `vt` has no local dependencies.
+- Releases go in layers: leaves (`color`/`vt`/`cursor`/`screen`), then middle
   (`terminfo`/`reader`/`spinner`), then top (`prompt`/`progress`). See
   `docs/release-validation.md`.
 
 ## Test frameworks
-- stdlib spec: `color`, `terminfo`, `spinner`, `prompt`, `progress`.
+- stdlib spec: `color`, `terminfo`, `spinner`, `prompt`, `progress`, `vt`.
 - Spectator: `cursor`, `screen`, `reader`. Match each file's existing style.
 
 ## Plans
