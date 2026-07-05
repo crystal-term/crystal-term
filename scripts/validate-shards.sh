@@ -89,6 +89,8 @@ YAML
       cat <<'YAML'
   term-cursor:
     path: ../cursor
+  term-vt:
+    path: ../vt
 YAML
       ;;
     prompt)
@@ -111,6 +113,8 @@ YAML
     path: ../screen
   term-spinner:
     path: ../spinner
+  term-vt:
+    path: ../vt
 YAML
       ;;
     *)
