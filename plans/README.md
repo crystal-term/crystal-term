@@ -52,7 +52,7 @@ Within a wave, plans are independent and can run in parallel.
 | 021 | [SPIKE: bare-Escape handling](021-reader-escape-key-spike.md) | P3 | M | 002, 005, 006 | reader, root | DONE |
 | 022 | [New shard `term-vt`: VT parser + screen model](022-term-vt-shard.md) | P2 | L | — | root (new `shards/vt` plain dir) | DONE |
 | 023 | [`term-vt` phase 2: PTY + session harness](023-term-vt-pty-harness.md) | P2 | M-L | 022 | root (`shards/vt`) | DONE |
-| 024 | [Dogfood vt: spinner/progress grid specs](024-dogfood-vt-spinner-progress.md) | P2 | M | 022 | spinner, progress, root (vt) | TODO |
+| 024 | [Dogfood vt: spinner/progress grid specs](024-dogfood-vt-spinner-progress.md) | P2 | M | 022 | spinner, progress, root (vt) | DONE |
 | 025 | [Dogfood vt: reader/prompt PTY integration specs](025-dogfood-vt-reader-prompt.md) | P2 | M | 022, 023, 024 | reader, prompt, root | TODO |
 | 026 | [`term-vt` phase 3: CLI (run/snapshot/script)](026-term-vt-cli.md) | P3 | M-L | 023 (024/025 recommended) | root (`shards/vt`) | TODO |
 
