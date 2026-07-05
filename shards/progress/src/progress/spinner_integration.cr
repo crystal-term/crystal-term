@@ -53,10 +53,10 @@ module Term
                           when Time::Span
                             chosen_interval
                           when Int32
-                            (chosen_interval * 10).milliseconds
+                            (1000 // chosen_interval).milliseconds
                           when Nil
                             # Default to Spinner classic if nothing provided
-                            (10 * 10).milliseconds
+                            100.milliseconds
                           end
 
         @spinner_frames = chosen_frames
