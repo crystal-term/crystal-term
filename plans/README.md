@@ -37,7 +37,7 @@ Within a wave, plans are independent and can run in parallel.
 | 009 | [Color bug sweep](009-color-bug-sweep.md) | P2 | S-M | — | color | DONE |
 | 010 | [Cursor/screen/terminfo fixes](010-cursor-screen-terminfo-fixes.md) | P2 | M | — | cursor, screen, terminfo | DONE |
 | 011 | [Reader test seam](011-reader-test-seam.md) | P2 | M | 002, 005, 006 | reader | TODO |
-| 012 | [Render-loop performance](012-render-loop-performance.md) | P2 | M | 007 | screen, spinner, root (progress) | TODO |
+| 012 | [Render-loop performance](012-render-loop-performance.md) | P2 | M | 007 | screen, spinner, root (progress) | DONE |
 | 013 | [Color capability detection + NO_COLOR](013-color-capability-detection.md) | P3 | M | 009 | color, prompt | DONE |
 | 014 | [Spectator hygiene](014-spectator-hygiene.md) | P3 | S | — | 6 submodules + root | DONE |
 | 015 | [Root AGENTS.md](015-root-agents-md.md) | P3 | S | — | root | DONE |
