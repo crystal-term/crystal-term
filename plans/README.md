@@ -29,7 +29,7 @@ Within a wave, plans are independent and can run in parallel.
 | 001 | [Root CI + submodule HTTPS](001-root-ci-and-submodule-https.md) | P1 | S | — | root | DONE |
 | 002 | [Reader raw-mode inversion](002-reader-raw-mode-inversion.md) | P1 | S | 001 | reader | DONE |
 | 003 | [Enter key + subscribe macro fail-loud](003-enter-key-and-subscribe-macro.md) | P1 | S | — | reader, prompt | DONE |
-| 004 | [Prompt characterization tests](004-prompt-characterization-tests.md) | P1 | L | 003 | prompt | TODO |
+| 004 | [Prompt characterization tests](004-prompt-characterization-tests.md) | P1 | L | 003 | prompt | DONE |
 | 005 | [Reader handler registry (leak fix)](005-reader-handler-registry.md) | P1 | M | 003, 004 | reader, prompt | TODO |
 | 006 | [read_line + history fixes](006-reader-read-line-and-history.md) | P2 | M | 002, 005 | reader | TODO |
 | 007 | [Spinner testability + concurrency](007-spinner-testability-and-concurrency.md) | P2 | M | — | spinner, root (progress) | DONE |
