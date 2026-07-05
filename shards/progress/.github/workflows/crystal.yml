@@ -1,0 +1,16 @@
+name: specs
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: latest
+      - run: shards install
+      - run: crystal spec
