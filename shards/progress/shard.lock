@@ -1,9 +1,5 @@
 version: 2.0
 shards:
-  spectator:
-    git: https://gitlab.com/arctic-fox/spectator.git
-    version: 0.12.4
-
   term-cursor:
     git: https://github.com/crystal-term/cursor.git
     version: 1.0.0

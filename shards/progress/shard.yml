@@ -17,10 +17,6 @@ dependencies:
     github: crystal-term/spinner
     version: ~> 1.0.0
 
-development_dependencies:
-  spectator:
-    gitlab: arctic-fox/spectator
-
 crystal: ">= 1.0.0"
 
 license: MIT
