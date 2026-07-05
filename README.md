@@ -16,6 +16,19 @@ This repository contains seven nested shard repositories plus the local
 | `prompt` | `shards/prompt` | nested Git repo, `crystal-term/prompt` |
 | `progress` | `shards/progress` | local directory tracked by this root checkout |
 
+## Getting started
+
+Clone with submodules:
+
+    git clone --recurse-submodules https://github.com/crystal-term/crystal-term.git
+
+Or, in an existing clone:
+
+    git submodule update --init
+
+Submodule URLs are HTTPS so anonymous and CI clones work. If you push via
+SSH, add a rewrite once: `git config url."git@github.com:".insteadOf "https://github.com/"`.
+
 ## Cross-shard validation
 
 Use the root harness in local integration mode:
