@@ -2,13 +2,12 @@
 
 Root checkout for the crystal-term shard family.
 
-This repository contains eight nested shard repositories and one root-tracked
-plain shard directory:
+This repository contains nine nested shard repositories:
 
 | Shard | Path | Ownership |
 | --- | --- | --- |
 | `color` | `shards/color` | nested Git repo, `crystal-term/color` |
-| `vt` | `shards/vt` | plain directory, pre-publication |
+| `vt` | `shards/vt` | nested Git repo, `crystal-term/vt` |
 | `cursor` | `shards/cursor` | nested Git repo, `crystal-term/cursor` |
 | `screen` | `shards/screen` | nested Git repo, `crystal-term/screen` |
 | `terminfo` | `shards/terminfo` | nested Git repo, `crystal-term/terminfo` |

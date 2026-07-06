@@ -22,3 +22,6 @@
 [submodule "progress"]
 	path = shards/progress
 	url = https://github.com/crystal-term/progress.git
+[submodule "vt"]
+	path = shards/vt
+	url = https://github.com/crystal-term/vt.git
