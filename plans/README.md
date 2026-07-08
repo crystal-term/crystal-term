@@ -25,7 +25,7 @@ pushed without operator instruction.
 |---|------|----------|--------|------------|---------------|--------|
 | 029 | [vt: scroll regions, origin/insert mode, tab stops](029-vt-scroll-regions-modes.md) | P2 | M-L | — | vt, root | DONE |
 | 030 | [vt: mouse protocols, bracketed paste, focus](030-vt-input-modes.md) | P2 | M | — | vt, root | DONE |
-| 031 | [vt: stop dropping combining marks / VS16](031-vt-combining-marks.md) | P2 | M | — | vt, root | TODO |
+| 031 | [vt: stop dropping combining marks / VS16](031-vt-combining-marks.md) | P2 | M | — | vt, root | DONE |
 | 032 | [vt: opt-in resize reflow](032-vt-resize-reflow.md) | P3 | L | 029, 031 | vt, root | TODO |
 | 033 | [SPIKE: vt on Windows (core CI + ConPTY)](033-vt-windows-conpty-spike.md) | P3 | M-L | — (operator) | vt, root | TODO |
 
