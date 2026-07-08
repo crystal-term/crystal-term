@@ -24,6 +24,9 @@
 - **Category**: vt hardening (README "Unsupported" burn-down) + spike
 - **Planned at**: root commit `d9f941c`, vt submodule `v0.3.0` (`5c72959`),
   2026-07-06
+- **Completed**: 2026-07-08 — require split + CI workflow + prototype +
+  findings report. Windows Actions lane not observed (operator push stop).
+  See `plans/reports/033-conpty-findings.md`.
 
 ## Why this matters
 

@@ -1,0 +1,23 @@
+name: conpty-echo-spike
+version: 0.1.0
+
+authors:
+  - Chris Watson <cawatson1993@gmail.com>
+
+description: >
+  Plan 033 spike: smallest Crystal program that spawns `cmd /c echo ok`
+  under CreatePseudoConsole, pumps output into Term::VT::Screen, and
+  prints the snapshot. Windows-only; untested until a Windows runner
+  is available.
+
+crystal: ">= 1.0.0"
+
+dependencies:
+  term-vt:
+    path: ../../../shards/vt
+
+targets:
+  conpty_echo:
+    main: src/conpty_echo.cr
+
+license: MIT
